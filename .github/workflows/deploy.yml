@@ -18,11 +18,18 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install AWS CLI
+      - name: Verify AWS CLI Installation
+        run: aws --version
+
+      - name: Update AWS CLI (If Needed)
         run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+          if ! aws --version | grep -q "aws-cli/2"; then
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install --update
+          else
+            echo "AWS CLI is already installed."
+          fi
 
       - name: Configure AWS Credentials
         env:
